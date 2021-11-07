@@ -20,12 +20,7 @@ public class LottoTest {
     @Test
     public void lottoIssueTest() {
         PurchaseAmount amount = new PurchaseAmount(1_000);
-        LottoMachine lottoMachine = new LottoMachine(new NumberGenerator() {
-            @Override
-            public List<Integer> generate(int digit) {
-                return Arrays.asList(1, 2, 6, 10, 17, 42);
-            }
-        });
+        LottoMachine lottoMachine = new LottoMachine(digit -> Arrays.asList(1, 2, 6, 10, 17, 42));
         Lottos lottos = lottoMachine.issue(amount);
         assertThat(lottos).isNotEmpty();
         assertThat(lottos).containsExactly(new Lotto(Arrays.asList(1, 2, 6, 10, 17, 42)));
