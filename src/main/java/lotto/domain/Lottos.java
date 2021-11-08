@@ -15,7 +15,7 @@ public class Lottos implements Iterable<Lotto> {
         return this.lottos.size();
     }
 
-    public Lottos addLottos(Lottos otherLottos) {
+    public Lottos combineLottos(Lottos otherLottos) {
         this.lottos.addAll(otherLottos.lottos);
         return new Lottos(this.lottos);
     }

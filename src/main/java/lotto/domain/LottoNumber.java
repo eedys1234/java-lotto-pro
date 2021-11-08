@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public class LottoNumber {
 
-    private final int number;
     private static final int LOTTO_START_NUMBER = 1;
     private static final int LOTTO_END_NUMBER = 45;
     private static final String VALUE_OUT_OF_RANGE_ERROR_MESSAGE = "제한된 범위를 벗어났습니다.";
+    private final int number;
 
     public LottoNumber(int number) {
         validateNumberRange(number);

@@ -1,18 +1,14 @@
 package lotto.domain;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
-import static lotto.domain.Winnings.SECOND;
 
 public class Lotto implements Iterable<LottoNumber> {
 
-    private List<LottoNumber> lottoNumbers;
     private final int LOTTO_LIMIT_COUNT = 6;
     private final String LOTTO_COUNT_OVER_ERROR_MESSAGE = "제한된 개수 이상으로 할당받았습니다.";
+    private List<LottoNumber> lottoNumbers;
 
     public Lotto(List<Integer> numbers) {
         validateLottoCountRange(numbers);
@@ -46,11 +42,21 @@ public class Lotto implements Iterable<LottoNumber> {
                 .size();
     }
 
+    public static Lotto issue(String numbers) {
+        return new Lotto(
+                Arrays.stream(numbers.split(","))
+                .map(String::trim)
+                .map(Integer::parseInt)
+                .distinct()
+                .collect(toList())
+        );
+    }
+
     private boolean bonusCorrespondCount(LottoNumber bonusNumber) {
         return contains(bonusNumber);
     }
 
-    private boolean contains(LottoNumber number) {
+    public boolean contains(LottoNumber number) {
         return this.lottoNumbers.contains(number);
     }
 

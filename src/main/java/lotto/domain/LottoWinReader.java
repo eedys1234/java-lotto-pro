@@ -16,18 +16,24 @@ public class LottoWinReader {
         this.bonusNumber = new LottoNumber(bonusNumber);
     }
 
-    public static LottoWinReader make(String lottoNumbers, String bonusLottoNumber) {
-        List<Integer> numbers = Arrays.stream(lottoNumbers.split(","))
-                .map(String::trim)
-                .map(Integer::parseInt)
-                .distinct()
-                .collect(toList());
+    public LottoWinReader(Lotto lotto, LottoNumber bonusNumber) {
+        validateBonusNumber(lotto, bonusNumber);
+        this.winLotto = lotto;
+        this.bonusNumber = bonusNumber;
+    }
 
-        return new LottoWinReader(numbers, Integer.parseInt(bonusLottoNumber));
+    public static LottoWinReader make(String lottoNumbers, String bonusLottoNumber) {
+        return new LottoWinReader(Lotto.issue(lottoNumbers), new LottoNumber(Integer.parseInt(bonusLottoNumber)));
     }
 
     private void validateBonusNumber(List<Integer> numbers, int bonusNumber) {
         if(numbers.contains(bonusNumber)) {
+            throw new IllegalArgumentException(NUMBER_OVERLAP_ERROR_MESSAGE);
+        }
+    }
+
+    private void validateBonusNumber(Lotto lotto, LottoNumber bonusNumber) {
+        if(lotto.contains(bonusNumber)) {
             throw new IllegalArgumentException(NUMBER_OVERLAP_ERROR_MESSAGE);
         }
     }

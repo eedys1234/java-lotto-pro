@@ -19,8 +19,7 @@ public class LottoTest {
     @Test
     public void lottoIssueAutoTest() {
         Amount amount = new Amount(1_000);
-        LottoMachine lottoMachine = new LottoMachine(digit -> Arrays.asList(1, 2, 6, 10, 17, 42));
-        Lottos lottos = lottoMachine.issueAuto(amount);
+        Lottos lottos = LottoMachine.issueAuto(amount, digit -> Arrays.asList(1, 2, 6, 10, 17, 42));
         assertThat(lottos).isNotEmpty();
         assertThat(lottos).containsExactly(new Lotto(Arrays.asList(1, 2, 6, 10, 17, 42)));
     }
@@ -36,8 +35,7 @@ public class LottoTest {
     @Test
     public void lottoNumberCountTest() {
         assertThatThrownBy(() -> {
-            LottoMachine lottoMachine = new LottoMachine(digit -> Arrays.asList(1, 2, 3, 4, 5, 6, 7));
-            lottoMachine.issueAuto(new Amount(1_000));
+            LottoMachine.issueAuto(new Amount(1_000), digit -> Arrays.asList(1, 2, 3, 4, 5, 6, 7));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -67,8 +65,7 @@ public class LottoTest {
     @Test
     public void lottoCount_InAmountTest() {
         Amount amount = new Amount(14_000);
-        LottoMachine lottoMachine = new LottoMachine(new RandomNumberSupplier());
-        Lottos lottos = lottoMachine.issueAuto(amount);
+        Lottos lottos = LottoMachine.issueAuto(amount, new RandomNumberSupplier());
         assertThat(lottos.count()).isEqualTo(14);
     }
 
@@ -147,9 +144,8 @@ public class LottoTest {
     @DisplayName("수동으로 로또 발행 기능 테스트")
     @Test
     public void lottoIssueManualTest() {
-        LottoMachine lottoMachine = new LottoMachine(new RandomNumberSupplier());
         List<String> numbers = Arrays.asList("8, 21, 23, 41, 42, 43", "3, 5, 11, 16, 32, 38", "7, 11, 16, 35, 36, 44");
-        Lottos lottos = lottoMachine.issueManual(numbers);
+        Lottos lottos = LottoMachine.issueManual(numbers);
         assertThat(lottos.count()).isEqualTo(3);
     }
 
@@ -157,11 +153,10 @@ public class LottoTest {
     @Test
     public void addLottosTest() {
 
-        LottoMachine lottoMachine = new LottoMachine(new RandomNumberSupplier());
         List<String> numbers = Arrays.asList("8, 21, 23, 41, 42, 43", "3, 5, 11, 16, 32, 38", "7, 11, 16, 35, 36, 44");
-        Lottos manualLottos = lottoMachine.issueManual(numbers);
-        Lottos autoLottos = lottoMachine.issueAuto(new Amount(11_000));
-        Lottos totalLottos = manualLottos.addLottos(autoLottos);
+        Lottos manualLottos = LottoMachine.issueManual(numbers);
+        Lottos autoLottos = LottoMachine.issueAuto(new Amount(11_000), new RandomNumberSupplier());
+        Lottos totalLottos = manualLottos.combineLottos(autoLottos);
         assertThat(totalLottos.count()).isEqualTo(14);
     }
 

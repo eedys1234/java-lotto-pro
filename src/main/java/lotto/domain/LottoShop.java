@@ -14,12 +14,10 @@ public class LottoShop {
 
     private final InputView inputView;
     private final ResultView resultView;
-    private final LottoMachine lottoMachine;
 
     public LottoShop() {
         this.inputView = new ConsoleInputView();
         this.resultView = new ConsoleResultView();
-        this.lottoMachine = new LottoMachine(new RandomNumberSupplier());
     }
 
     public void open() {
@@ -43,7 +41,7 @@ public class LottoShop {
     private Amount readTotalAmount() {
         try {
             resultView.printPurchaseAmountMessage();
-            return new Amount(Long.parseLong(inputView.readPurchaseAmount()));
+            return new Amount(inputView.readPurchaseAmount());
         } catch (IllegalArgumentException e) {
             return readTotalAmount();
         }
@@ -52,7 +50,7 @@ public class LottoShop {
     private Amount readManualLottosCount(Amount totalAmount) {
         try {
             resultView.printPurchaseManualLottosCountMessage();
-            Amount amount = new Amount(Integer.parseInt(inputView.readManualLottosCount()) * LottoMachine.LOTTO_PRICE);
+            Amount amount = new Amount(inputView.readManualLottosCount() * LottoMachine.LOTTO_PRICE);
             subtractAmount(totalAmount, amount);
             return amount;
         } catch (IllegalArgumentException e) {
@@ -71,18 +69,18 @@ public class LottoShop {
             List<String> numbers = LongStream.rangeClosed(1, count)
                     .mapToObj(n -> inputView.readManualLottosNumber())
                     .collect(toList());
-            return lottoMachine.issueManual(numbers);
+            return LottoMachine.issueManual(numbers);
         } catch (IllegalArgumentException e) {
             return purchaseManualLottos(amount);
         }
     }
 
     private Lottos purchaseAutoLottos(Amount amount) {
-        return lottoMachine.issueAuto(amount);
+        return LottoMachine.issueAuto(amount, new RandomNumberSupplier());
     }
 
     private Lottos combineLottos(Lottos manualLottos, Lottos autoLottos) {
-        return manualLottos.addLottos(autoLottos);
+        return manualLottos.combineLottos(autoLottos);
     }
 
     private LottoWinReader makeLottoWinReader() {

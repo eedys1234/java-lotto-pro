@@ -2,9 +2,9 @@ package lotto.ui;
 
 public interface InputView {
 
-    String readPurchaseAmount();
+    Long readPurchaseAmount();
     String readWinLottoNumbers();
     String readWinBonusLottoNumber();
-    String readManualLottosCount();
+    int readManualLottosCount();
     String readManualLottosNumber();
 }
